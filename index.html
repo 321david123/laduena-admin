@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel de Administración · La Dueña</title>
+<style>
+  :root{ --bg:#0d0b0a; --card:#1a1614; --line:#2e2724; --cream:#f4e9d7; --muted:#a99f93; --red:#C1272D; --gold:#e0a83c; --ok:#3ba55d; --r:14px; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--cream);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:18px}
+  .btn{appearance:none;border:0;border-radius:10px;padding:11px 16px;font-weight:700;font-size:.92rem;cursor:pointer;transition:.15s;font-family:inherit}
+  .btn--ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}.btn--ghost:hover{border-color:var(--muted)}
+  .btn--ok{background:var(--ok);color:#fff}
+  .btn--sm{padding:7px 11px;font-size:.82rem;border-radius:8px}
+  input{width:100%;background:#13100e;border:1px solid var(--line);color:var(--cream);border-radius:9px;padding:10px 12px;font-size:.95rem;font-family:inherit}
+  input:focus{outline:none;border-color:var(--gold)}
+  label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 5px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);margin-bottom:18px}
+  .topbar .t{display:flex;align-items:center;gap:11px}
+  .topbar .badge{width:40px;height:40px;border-radius:50%;background:var(--red);display:grid;place-items:center;color:#fff;font-weight:800;font-size:.9rem;letter-spacing:.02em}
+  .topbar h2{margin:0;font-size:1.02rem}
+  .topbar small{color:var(--muted);display:block;font-size:.74rem}
+  .hint{background:#1a1410;border:1px solid #3a2c1c;color:var(--gold);border-radius:10px;padding:11px 14px;font-size:.85rem;margin-bottom:18px}
+  .cat{margin:0 0 26px}
+  .cat__head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px}
+  .cat__head h3{margin:0;font-size:1.05rem;color:var(--gold);border-left:3px solid var(--red);padding-left:10px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:11px}
+  .item__grid{display:grid;grid-template-columns:1fr 130px;gap:11px}
+  .item__row{display:flex;align-items:center;gap:10px;margin-top:11px;flex-wrap:wrap}
+  .toggle{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:.85rem;cursor:pointer;user-select:none}
+  .toggle input{width:auto}
+  .grow{flex:1}
+  .saved{color:var(--ok);font-size:.8rem;opacity:0;transition:.2s}
+  .saved.show{opacity:1}
+  .msg{font-size:.85rem;margin:10px 0 0;min-height:1.1em}
+  .msg--err{color:#ff8b8b}
+  .loading{color:var(--muted);padding:30px 0;text-align:center}
+  @media(max-width:540px){.item__grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="t">
+      <span class="badge">La&nbsp;D</span>
+      <div><h2>Editar el menú</h2><small>La Dueña · Davenport</small></div>
+    </div>
+    <button class="btn btn--ghost btn--sm" id="reload">↻ Recargar</button>
+  </div>
+  <div class="hint">✏️ Cambia nombres, descripciones y precios. Pulsa <strong>Guardar</strong> y los cambios aparecen en la página al instante. Desmarca <strong>Visible</strong> para ocultar un platillo sin borrarlo.</div>
+  <div id="menu"><div class="loading">Cargando el menú…</div></div>
+  <p class="msg" id="appMsg"></p>
+</div>
+
+<script>
+(function(){
+  var API = 'https://scgcgfcfvbuppkraxjrp.supabase.co';
+  var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjZ2NnZmNmdmJ1cHBrcmF4anJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNjk2MTQsImV4cCI6MjA5NTY0NTYxNH0.Yjz5X8xnqYmOQOMN-4VGBCw0uF3Sy0D-umC-b5nxp54';
+  var WH = {'apikey':ANON,'Authorization':'Bearer '+ANON,'Content-Type':'application/json','Prefer':'return=representation'};
+  var RH = {'apikey':ANON};
+  var ITEMS = [];
+  function $(s){ return document.querySelector(s); }
+  function show(el,msg,kind){ el.textContent = msg||''; el.className = 'msg' + (kind?(' msg--'+kind):''); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  function loadMenu(){
+    show($('#appMsg'),'');
+    fetch(API + '/rest/v1/ld_menu?select=*&order=orden', { headers:RH })
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+      .then(function(data){ ITEMS = data || []; render(); })
+      .catch(function(){ $('#menu').innerHTML=''; show($('#appMsg'),'No se pudo cargar el menú. Revisa tu internet y pulsa Recargar.','err'); });
+  }
+
+  function render(){
+    var cats = [];
+    ITEMS.forEach(function(it){ if(cats.indexOf(it.categoria) < 0) cats.push(it.categoria); });
+    var wrap = $('#menu'); wrap.innerHTML = '';
+    cats.forEach(function(cat){
+      var sec = document.createElement('div'); sec.className = 'cat';
+      sec.innerHTML = '<div class="cat__head"><h3>'+esc(cat)+'</h3><button class="btn btn--ghost btn--sm" data-add="'+esc(cat)+'">+ Agregar platillo</button></div>';
+      ITEMS.filter(function(i){ return i.categoria === cat; }).forEach(function(it){ sec.appendChild(card(it)); });
+      wrap.appendChild(sec);
+    });
+    wrap.querySelectorAll('[data-add]').forEach(function(b){ b.onclick = function(){ addItem(b.getAttribute('data-add')); }; });
+  }
+
+  function card(it){
+    var d = document.createElement('div'); d.className='item'; d.dataset.id = it.id;
+    d.innerHTML =
+      '<div class="item__grid">'
+      + '<div><label>Nombre</label><input class="f-nombre" value="'+esc(it.nombre)+'"></div>'
+      + '<div><label>Precio ($)</label><input class="f-precio" type="number" step="0.01" value="'+(it.precio==null?'':it.precio)+'"></div>'
+      + '</div>'
+      + '<div style="margin-top:11px"><label>Descripción</label><input class="f-descr" value="'+esc(it.descr||'')+'"></div>'
+      + '<div class="item__row"><label class="toggle"><input type="checkbox" class="f-activo"'+(it.activo?' checked':'')+'> Visible</label>'
+      + '<span class="grow"></span><span class="saved">✓ Guardado</span>'
+      + '<button class="btn btn--ghost btn--sm b-del">Eliminar</button>'
+      + '<button class="btn btn--ok btn--sm b-save">Guardar</button></div>';
+    d.querySelector('.b-save').onclick = function(){ saveItem(d); };
+    d.querySelector('.b-del').onclick  = function(){ delItem(it.id, it.nombre); };
+    return d;
+  }
+
+  function saveItem(d){
+    var pr = d.querySelector('.f-precio').value.trim();
+    var body = {
+      nombre: d.querySelector('.f-nombre').value.trim(),
+      descr:  d.querySelector('.f-descr').value.trim(),
+      precio: pr==='' ? null : Number(pr),
+      activo: d.querySelector('.f-activo').checked,
+      updated_at: new Date().toISOString()
+    };
+    fetch(API + '/rest/v1/ld_menu?id=eq.' + d.dataset.id, { method:'PATCH', headers:WH, body:JSON.stringify(body) })
+      .then(function(r){ if(!r.ok){ throw 0; } var s = d.querySelector('.saved'); s.classList.add('show'); setTimeout(function(){ s.classList.remove('show'); }, 1600); })
+      .catch(function(){ show($('#appMsg'),'Error al guardar. Intenta de nuevo.','err'); });
+  }
+
+  function addItem(cat){
+    var maxO = ITEMS.reduce(function(m,i){ return Math.max(m, i.orden||0); }, 0) + 1;
+    fetch(API + '/rest/v1/ld_menu', { method:'POST', headers:WH, body:JSON.stringify({ categoria:cat, nombre:'Nuevo platillo', descr:'', precio:0, orden:maxO }) })
+      .then(function(r){ return r.json(); })
+      .then(function(rows){ if(rows && rows[0]){ ITEMS.push(rows[0]); render(); } })
+      .catch(function(){ show($('#appMsg'),'Error al agregar.','err'); });
+  }
+
+  function delItem(id, nombre){
+    if(!confirm('¿Eliminar "'+(nombre||'este platillo')+'"? No se puede deshacer.')) return;
+    fetch(API + '/rest/v1/ld_menu?id=eq.' + id, { method:'DELETE', headers:WH })
+      .then(function(r){ if(!(r.ok || r.status===204)){ throw 0; } ITEMS = ITEMS.filter(function(i){ return i.id !== id; }); render(); })
+      .catch(function(){ show($('#appMsg'),'Error al eliminar.','err'); });
+  }
+
+  $('#reload').addEventListener('click', loadMenu);
+  loadMenu();
+})();
+</script>
+</body>
+</html>
