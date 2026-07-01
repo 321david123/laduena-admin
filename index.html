@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Panel de Administración · La Dueña</title>
+<title>Admin Panel · La Dueña</title>
 <style>
   :root{ --bg:#0d0b0a; --card:#1a1614; --line:#2e2724; --cream:#f4e9d7; --muted:#a99f93; --red:#C1272D; --gold:#e0a83c; --ok:#3ba55d; --r:14px; }
   *{box-sizing:border-box}
@@ -65,12 +65,12 @@
     <div class="brand">
       <span class="badge">La&nbsp;D</span>
       <h1>La Dueña</h1>
-      <p>Panel de administración</p>
+      <p>Admin panel</p>
     </div>
     <form id="loginForm">
-      <div class="field"><label for="usuario">Usuario</label><input id="usuario" name="usuario" type="text" autocomplete="username" placeholder="admin" required /></div>
-      <div class="field"><label for="clave">Contraseña</label><input id="clave" name="clave" type="password" autocomplete="current-password" placeholder="••••••••" required /></div>
-      <button class="btn btn--red" style="width:100%" type="submit" id="loginBtn">Entrar</button>
+      <div class="field"><label for="usuario">Username</label><input id="usuario" name="usuario" type="text" autocomplete="username" placeholder="admin" required /></div>
+      <div class="field"><label for="clave">Password</label><input id="clave" name="clave" type="password" autocomplete="current-password" placeholder="••••••••" required /></div>
+      <button class="btn btn--red" style="width:100%" type="submit" id="loginBtn">Sign in</button>
       <p class="msg" id="loginMsg"></p>
     </form>
   </div>
@@ -80,36 +80,36 @@
 <section id="app" hidden>
   <div class="wrap">
     <div class="topbar">
-      <div class="t"><span class="badge">La&nbsp;D</span><div><h2>Panel de La Dueña</h2><small>Davenport</small></div></div>
-      <div style="display:flex;gap:8px"><button class="btn btn--ghost btn--sm" id="reload">↻ Recargar</button><button class="btn btn--ghost btn--sm" id="logout">Salir</button></div>
+      <div class="t"><span class="badge">La&nbsp;D</span><div><h2>La Dueña Admin</h2><small>Davenport</small></div></div>
+      <div style="display:flex;gap:8px"><button class="btn btn--ghost btn--sm" id="reload">↻ Reload</button><button class="btn btn--ghost btn--sm" id="logout">Log out</button></div>
     </div>
 
     <div class="seg">
-      <button id="tab-menu" class="on">🍽️ Menú</button>
-      <button id="tab-fotos">📸 Fotos</button>
-      <button id="tab-cuenta">🔑 Cuenta</button>
+      <button id="tab-menu" class="on">🍽️ Menu</button>
+      <button id="tab-fotos">📸 Photos</button>
+      <button id="tab-cuenta">🔑 Account</button>
     </div>
 
     <div id="view-menu">
-      <div class="hint">✏️ Cambia nombres, descripciones y precios. Pulsa <strong>Guardar</strong> y aparece en la página al instante. Desmarca <strong>Visible</strong> para ocultar un platillo sin borrarlo.</div>
-      <div id="menu"><div class="loading">Cargando el menú…</div></div>
+      <div class="hint">✏️ Edit names, descriptions and prices. Hit <strong>Save</strong> and it shows on the site instantly. Uncheck <strong>Visible</strong> to hide a dish without deleting it.</div>
+      <div id="menu"><div class="loading">Loading the menu…</div></div>
       <p class="msg" id="appMsg"></p>
     </div>
 
     <div id="view-fotos" hidden>
-      <div class="hint">📸 Sube fotos nuevas a la galería o borra las que no quieras. Aparecen en la página al instante. (JPG o PNG funcionan mejor.)</div>
-      <label class="uploadbtn">＋ Subir foto<input type="file" id="fileInput" accept="image/*" hidden></label>
+      <div class="hint">📸 Upload new photos to the gallery or delete the ones you don't want. They show on the site instantly. (JPG or PNG work best.)</div>
+      <label class="uploadbtn">＋ Upload photo<input type="file" id="fileInput" accept="image/*" hidden></label>
       <p class="msg" id="upMsg"></p>
-      <div id="fotos" class="fotos-grid"><div class="loading">Cargando fotos…</div></div>
+      <div id="fotos" class="fotos-grid"><div class="loading">Loading photos…</div></div>
     </div>
 
     <div id="view-cuenta" hidden>
-      <div class="hint">🔑 Cambia tu usuario y/o tu contraseña. Deja un campo vacío si no lo quieres cambiar. La próxima vez que entres, usa tus nuevos datos.</div>
+      <div class="hint">🔑 Change your username and/or password. Leave a field empty to keep it. Next time you sign in, use your new details.</div>
       <div class="item" style="max-width:460px">
-        <div style="margin-bottom:12px"><label for="c-user">Nuevo usuario</label><input id="c-user" name="c-user" type="text" autocomplete="username" placeholder="(dejar vacío para no cambiarlo)"></div>
-        <div style="margin-bottom:12px"><label for="c-pass">Nueva contraseña</label><input id="c-pass" name="c-pass" type="password" autocomplete="new-password" placeholder="mínimo 6 caracteres"></div>
-        <div style="margin-bottom:14px"><label for="c-pass2">Confirmar contraseña</label><input id="c-pass2" name="c-pass2" type="password" autocomplete="new-password" placeholder="repite la nueva contraseña"></div>
-        <button class="btn btn--ok" id="c-save">Guardar cambios</button>
+        <div style="margin-bottom:12px"><label for="c-user">New username</label><input id="c-user" name="c-user" type="text" autocomplete="username" placeholder="(leave blank to keep it)"></div>
+        <div style="margin-bottom:12px"><label for="c-pass">New password</label><input id="c-pass" name="c-pass" type="password" autocomplete="new-password" placeholder="at least 6 characters"></div>
+        <div style="margin-bottom:14px"><label for="c-pass2">Confirm password</label><input id="c-pass2" name="c-pass2" type="password" autocomplete="new-password" placeholder="repeat the new password"></div>
+        <button class="btn btn--ok" id="c-save">Save changes</button>
         <p class="msg" id="credMsg"></p>
       </div>
     </div>
@@ -131,19 +131,19 @@
   /* ---------- login / session ---------- */
   $('#loginForm').addEventListener('submit', function(e){
     e.preventDefault();
-    var btn=$('#loginBtn'); btn.disabled=true; show($('#loginMsg'),'Entrando…');
+    var btn=$('#loginBtn'); btn.disabled=true; show($('#loginMsg'),'Signing in…');
     var u=$('#usuario').value.trim(); var email = u.indexOf('@')>-1 ? u : u+'@laduena.com';
     fetch(API+'/auth/v1/token?grant_type=password',{method:'POST',headers:{'apikey':ANON,'Content-Type':'application/json'},body:JSON.stringify({email:email,password:$('#clave').value})})
       .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
       .then(function(res){ btn.disabled=false;
-        if(!res.ok || !res.d.access_token){ show($('#loginMsg'),'Usuario o contraseña incorrectos.','err'); return; }
+        if(!res.ok || !res.d.access_token){ show($('#loginMsg'),'Incorrect username or password.','err'); return; }
         TOKEN=res.d.access_token; localStorage.setItem('ld_token',TOKEN); show($('#loginMsg'),''); enterApp();
       })
-      .catch(function(){ btn.disabled=false; show($('#loginMsg'),'No se pudo conectar. Revisa tu internet.','err'); });
+      .catch(function(){ btn.disabled=false; show($('#loginMsg'),"Couldn't connect. Check your internet.",'err'); });
   });
   $('#logout').onclick = function(){ TOKEN=''; localStorage.removeItem('ld_token'); $('#app').hidden=true; $('#login').hidden=false; };
   function enterApp(){ $('#login').hidden=true; $('#app').hidden=false; loadMenu(); }
-  function expired(){ alert('Tu sesión expiró. Vuelve a entrar.'); TOKEN=''; localStorage.removeItem('ld_token'); $('#app').hidden=true; $('#login').hidden=false; }
+  function expired(){ alert('Your session expired. Please sign in again.'); TOKEN=''; localStorage.removeItem('ld_token'); $('#app').hidden=true; $('#login').hidden=false; }
 
   /* ---------- view toggle ---------- */
   var photosLoaded=false;
@@ -160,18 +160,18 @@
   /* ---------- change username / password ---------- */
   $('#c-save').onclick=function(){
     var u=$('#c-user').value.trim(); var p=$('#c-pass').value; var p2=$('#c-pass2').value;
-    if(!u && !p){ show($('#credMsg'),'Escribe un nuevo usuario o una nueva contraseña.','err'); return; }
-    if(p){ if(p.length<6){ show($('#credMsg'),'La contraseña debe tener al menos 6 caracteres.','err'); return; } if(p!==p2){ show($('#credMsg'),'Las contraseñas no coinciden.','err'); return; } }
-    var btn=$('#c-save'); btn.disabled=true; show($('#credMsg'),'Guardando…');
+    if(!u && !p){ show($('#credMsg'),'Enter a new username or a new password.','err'); return; }
+    if(p){ if(p.length<6){ show($('#credMsg'),'Password must be at least 6 characters.','err'); return; } if(p!==p2){ show($('#credMsg'),"Passwords don't match.",'err'); return; } }
+    var btn=$('#c-save'); btn.disabled=true; show($('#credMsg'),'Saving…');
     fetch(API+'/functions/v1/admin-creds',{method:'POST',headers:{'apikey':ANON,'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},body:JSON.stringify({new_username:u,new_password:p})})
       .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,st:r.status,d:d}; },function(){ return {ok:r.ok,st:r.status,d:{}}; }); })
       .then(function(res){ btn.disabled=false;
         if(res.st===401){ expired(); return; }
-        if(!res.ok){ show($('#credMsg'), (res.d&&res.d.error)||'No se pudo guardar. Intenta de nuevo.','err'); return; }
+        if(!res.ok){ show($('#credMsg'), (res.d&&res.d.error)||"Couldn't save. Try again.",'err'); return; }
         $('#c-user').value=''; $('#c-pass').value=''; $('#c-pass2').value='';
-        show($('#credMsg'),'✓ Guardado. La próxima vez inicia sesión con tus nuevos datos.','ok');
+        show($('#credMsg'),'✓ Saved. Next time, sign in with your new details.','ok');
       })
-      .catch(function(){ btn.disabled=false; show($('#credMsg'),'No se pudo conectar. Revisa tu internet.','err'); });
+      .catch(function(){ btn.disabled=false; show($('#credMsg'),"Couldn't connect. Check your internet.",'err'); });
   };
 
   /* ================= MENU ================= */
@@ -181,14 +181,14 @@
     fetch(API+'/rest/v1/ld_menu?select=*&order=orden',{headers:RH})
       .then(function(r){ return r.ok?r.json():Promise.reject(); })
       .then(function(d){ ITEMS=d||[]; renderMenu(); })
-      .catch(function(){ $('#menu').innerHTML=''; show($('#appMsg'),'No se pudo cargar el menú. Pulsa Recargar.','err'); });
+      .catch(function(){ $('#menu').innerHTML=''; show($('#appMsg'),"Couldn't load the menu. Hit Reload.",'err'); });
   }
   function renderMenu(){
     var cats=[]; ITEMS.forEach(function(it){ if(cats.indexOf(it.categoria)<0) cats.push(it.categoria); });
     var wrap=$('#menu'); wrap.innerHTML='';
     cats.forEach(function(cat){
       var sec=document.createElement('div'); sec.className='cat';
-      sec.innerHTML='<div class="cat__head"><h3>'+esc(cat)+'</h3><button class="btn btn--ghost btn--sm" data-add="'+esc(cat)+'">+ Agregar platillo</button></div>';
+      sec.innerHTML='<div class="cat__head"><h3>'+esc(cat)+'</h3><button class="btn btn--ghost btn--sm" data-add="'+esc(cat)+'">+ Add dish</button></div>';
       ITEMS.filter(function(i){return i.categoria===cat;}).forEach(function(it){ sec.appendChild(menuCard(it)); });
       wrap.appendChild(sec);
     });
@@ -196,12 +196,12 @@
   }
   function menuCard(it){
     var d=document.createElement('div'); d.className='item'; d.dataset.id=it.id;
-    d.innerHTML='<div class="item__grid"><div><label>Nombre</label><input class="f-nombre" value="'+esc(it.nombre)+'"></div>'
-      +'<div><label>Precio ($)</label><input class="f-precio" type="number" step="0.01" value="'+(it.precio==null?'':it.precio)+'"></div></div>'
-      +'<div style="margin-top:11px"><label>Descripción</label><input class="f-descr" value="'+esc(it.descr||'')+'"></div>'
+    d.innerHTML='<div class="item__grid"><div><label>Name</label><input class="f-nombre" value="'+esc(it.nombre)+'"></div>'
+      +'<div><label>Price ($)</label><input class="f-precio" type="number" step="0.01" value="'+(it.precio==null?'':it.precio)+'"></div></div>'
+      +'<div style="margin-top:11px"><label>Description</label><input class="f-descr" value="'+esc(it.descr||'')+'"></div>'
       +'<div class="item__row"><label class="toggle"><input type="checkbox" class="f-activo"'+(it.activo?' checked':'')+'> Visible</label>'
-      +'<span class="grow"></span><span class="saved">✓ Guardado</span>'
-      +'<button class="btn btn--ghost btn--sm b-del">Eliminar</button><button class="btn btn--ok btn--sm b-save">Guardar</button></div>';
+      +'<span class="grow"></span><span class="saved">✓ Saved</span>'
+      +'<button class="btn btn--ghost btn--sm b-del">Delete</button><button class="btn btn--ok btn--sm b-save">Save</button></div>';
     d.querySelector('.b-save').onclick=function(){ saveItem(d); };
     d.querySelector('.b-del').onclick=function(){ delItem(it.id,it.nombre); };
     return d;
@@ -211,20 +211,20 @@
     var body={ nombre:d.querySelector('.f-nombre').value.trim(), descr:d.querySelector('.f-descr').value.trim(), precio:pr===''?null:Number(pr), activo:d.querySelector('.f-activo').checked, updated_at:new Date().toISOString() };
     fetch(API+'/rest/v1/ld_menu?id=eq.'+d.dataset.id,{method:'PATCH',headers:WH(),body:JSON.stringify(body)})
       .then(function(r){ if(r.status===401){ expired(); return; } if(!r.ok){ throw 0; } var s=d.querySelector('.saved'); s.classList.add('show'); setTimeout(function(){s.classList.remove('show');},1600); })
-      .catch(function(){ show($('#appMsg'),'Error al guardar.','err'); });
+      .catch(function(){ show($('#appMsg'),'Error saving.','err'); });
   }
   function addItem(cat){
     var maxO=ITEMS.reduce(function(m,i){return Math.max(m,i.orden||0);},0)+1;
-    fetch(API+'/rest/v1/ld_menu',{method:'POST',headers:WH(),body:JSON.stringify({categoria:cat,nombre:'Nuevo platillo',descr:'',precio:0,orden:maxO})})
+    fetch(API+'/rest/v1/ld_menu',{method:'POST',headers:WH(),body:JSON.stringify({categoria:cat,nombre:'New dish',descr:'',precio:0,orden:maxO})})
       .then(function(r){ if(r.status===401){ expired(); return []; } return r.json(); })
       .then(function(rows){ if(rows&&rows[0]){ ITEMS.push(rows[0]); renderMenu(); } })
-      .catch(function(){ show($('#appMsg'),'Error al agregar.','err'); });
+      .catch(function(){ show($('#appMsg'),'Error adding.','err'); });
   }
   function delItem(id,nombre){
-    if(!confirm('¿Eliminar "'+(nombre||'este platillo')+'"? No se puede deshacer.')) return;
+    if(!confirm('Delete "'+(nombre||'this dish')+'"? This can\'t be undone.')) return;
     fetch(API+'/rest/v1/ld_menu?id=eq.'+id,{method:'DELETE',headers:WH()})
       .then(function(r){ if(r.status===401){ expired(); return; } if(!(r.ok||r.status===204)){ throw 0; } ITEMS=ITEMS.filter(function(i){return i.id!==id;}); renderMenu(); })
-      .catch(function(){ show($('#appMsg'),'Error al eliminar.','err'); });
+      .catch(function(){ show($('#appMsg'),'Error deleting.','err'); });
   }
 
   /* ================= PHOTOS ================= */
@@ -234,38 +234,38 @@
     fetch(API+'/rest/v1/ld_photos?select=*&seccion=eq.gallery&order=orden',{headers:RH})
       .then(function(r){ return r.ok?r.json():Promise.reject(); })
       .then(function(rows){ PHOTOS=rows||[]; photosLoaded=true; renderPhotos(); })
-      .catch(function(){ $('#fotos').innerHTML=''; show($('#upMsg'),'No se pudieron cargar las fotos.','err'); });
+      .catch(function(){ $('#fotos').innerHTML=''; show($('#upMsg'),"Couldn't load the photos.",'err'); });
   }
   function renderPhotos(){
     var grid=$('#fotos'); grid.innerHTML='';
-    if(!PHOTOS.length){ grid.innerHTML='<p style="color:var(--muted)">Aún no hay fotos. Pulsa “Subir foto”.</p>'; return; }
+    if(!PHOTOS.length){ grid.innerHTML='<p style="color:var(--muted)">No photos yet. Hit “Upload photo”.</p>'; return; }
     PHOTOS.forEach(function(p){
       var d=document.createElement('div'); d.className='foto';
-      d.innerHTML='<img src="'+p.url+'" alt="" loading="lazy"><button class="del" title="Eliminar">×</button>';
+      d.innerHTML='<img src="'+p.url+'" alt="" loading="lazy"><button class="del" title="Delete">×</button>';
       d.querySelector('.del').onclick=function(){ delPhoto(p.id); };
       grid.appendChild(d);
     });
   }
   function delPhoto(id){
-    if(!confirm('¿Eliminar esta foto de la galería?')) return;
+    if(!confirm('Delete this photo from the gallery?')) return;
     fetch(API+'/rest/v1/ld_photos?id=eq.'+id,{method:'DELETE',headers:WH()})
       .then(function(r){ if(r.status===401){ expired(); return; } if(!(r.ok||r.status===204)){ throw 0; } PHOTOS=PHOTOS.filter(function(p){return p.id!==id;}); renderPhotos(); })
-      .catch(function(){ show($('#upMsg'),'Error al eliminar.','err'); });
+      .catch(function(){ show($('#upMsg'),'Error deleting.','err'); });
   }
   $('#fileInput').addEventListener('change', function(e){ var f=e.target.files&&e.target.files[0]; if(f) uploadPhoto(f); e.target.value=''; });
   function uploadPhoto(file){
-    show($('#upMsg'),'Subiendo…');
+    show($('#upMsg'),'Uploading…');
     var ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
     var name='g-'+Date.now()+'-'+Math.floor(Math.random()*10000)+'.'+ext;
     fetch(API+'/storage/v1/object/laduena/'+name,{method:'POST',headers:SH(file),body:file})
       .then(function(r){ if(r.status===401){ expired(); throw 'auth'; } if(!r.ok){ throw 0; }
         var url=API+'/storage/v1/object/public/laduena/'+name;
         var maxO=PHOTOS.reduce(function(m,p){return Math.max(m,p.orden||0);},0)+1;
-        return fetch(API+'/rest/v1/ld_photos',{method:'POST',headers:WH(),body:JSON.stringify({seccion:'gallery',url:url,alt:'Foto de La Dueña',orden:maxO})});
+        return fetch(API+'/rest/v1/ld_photos',{method:'POST',headers:WH(),body:JSON.stringify({seccion:'gallery',url:url,alt:'La Dueña photo',orden:maxO})});
       })
       .then(function(r){ if(!r||!r.ok){ throw 0; } return r.json(); })
-      .then(function(rows){ if(rows&&rows[0]){ PHOTOS.push(rows[0]); renderPhotos(); } show($('#upMsg'),'✓ Foto subida','ok'); setTimeout(function(){show($('#upMsg'),'');},2200); })
-      .catch(function(e){ if(e!=='auth') show($('#upMsg'),'Error al subir la foto. Intenta con una imagen JPG o PNG.','err'); });
+      .then(function(rows){ if(rows&&rows[0]){ PHOTOS.push(rows[0]); renderPhotos(); } show($('#upMsg'),'✓ Photo uploaded','ok'); setTimeout(function(){show($('#upMsg'),'');},2200); })
+      .catch(function(e){ if(e!=='auth') show($('#upMsg'),'Error uploading the photo. Try a JPG or PNG image.','err'); });
   }
 
   /* ---------- on load ---------- */
