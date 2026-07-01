@@ -87,6 +87,7 @@
     <div class="seg">
       <button id="tab-menu" class="on">🍽️ Menú</button>
       <button id="tab-fotos">📸 Fotos</button>
+      <button id="tab-cuenta">🔑 Cuenta</button>
     </div>
 
     <div id="view-menu">
@@ -100,6 +101,17 @@
       <label class="uploadbtn">＋ Subir foto<input type="file" id="fileInput" accept="image/*" hidden></label>
       <p class="msg" id="upMsg"></p>
       <div id="fotos" class="fotos-grid"><div class="loading">Cargando fotos…</div></div>
+    </div>
+
+    <div id="view-cuenta" hidden>
+      <div class="hint">🔑 Cambia tu usuario y/o tu contraseña. Deja un campo vacío si no lo quieres cambiar. La próxima vez que entres, usa tus nuevos datos.</div>
+      <div class="item" style="max-width:460px">
+        <div style="margin-bottom:12px"><label for="c-user">Nuevo usuario</label><input id="c-user" name="c-user" type="text" autocomplete="username" placeholder="(dejar vacío para no cambiarlo)"></div>
+        <div style="margin-bottom:12px"><label for="c-pass">Nueva contraseña</label><input id="c-pass" name="c-pass" type="password" autocomplete="new-password" placeholder="mínimo 6 caracteres"></div>
+        <div style="margin-bottom:14px"><label for="c-pass2">Confirmar contraseña</label><input id="c-pass2" name="c-pass2" type="password" autocomplete="new-password" placeholder="repite la nueva contraseña"></div>
+        <button class="btn btn--ok" id="c-save">Guardar cambios</button>
+        <p class="msg" id="credMsg"></p>
+      </div>
     </div>
   </div>
 </section>
@@ -136,13 +148,31 @@
   /* ---------- view toggle ---------- */
   var photosLoaded=false;
   function showView(v){
-    $('#view-menu').hidden=v!=='menu'; $('#view-fotos').hidden=v!=='fotos';
-    $('#tab-menu').classList.toggle('on',v==='menu'); $('#tab-fotos').classList.toggle('on',v==='fotos');
+    $('#view-menu').hidden=v!=='menu'; $('#view-fotos').hidden=v!=='fotos'; $('#view-cuenta').hidden=v!=='cuenta';
+    $('#tab-menu').classList.toggle('on',v==='menu'); $('#tab-fotos').classList.toggle('on',v==='fotos'); $('#tab-cuenta').classList.toggle('on',v==='cuenta');
     if(v==='fotos' && !photosLoaded) loadPhotos();
   }
   $('#tab-menu').onclick=function(){ showView('menu'); };
   $('#tab-fotos').onclick=function(){ showView('fotos'); };
+  $('#tab-cuenta').onclick=function(){ showView('cuenta'); };
   $('#reload').onclick=function(){ loadMenu(); if(photosLoaded) loadPhotos(); };
+
+  /* ---------- change username / password ---------- */
+  $('#c-save').onclick=function(){
+    var u=$('#c-user').value.trim(); var p=$('#c-pass').value; var p2=$('#c-pass2').value;
+    if(!u && !p){ show($('#credMsg'),'Escribe un nuevo usuario o una nueva contraseña.','err'); return; }
+    if(p){ if(p.length<6){ show($('#credMsg'),'La contraseña debe tener al menos 6 caracteres.','err'); return; } if(p!==p2){ show($('#credMsg'),'Las contraseñas no coinciden.','err'); return; } }
+    var btn=$('#c-save'); btn.disabled=true; show($('#credMsg'),'Guardando…');
+    fetch(API+'/functions/v1/admin-creds',{method:'POST',headers:{'apikey':ANON,'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'},body:JSON.stringify({new_username:u,new_password:p})})
+      .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,st:r.status,d:d}; },function(){ return {ok:r.ok,st:r.status,d:{}}; }); })
+      .then(function(res){ btn.disabled=false;
+        if(res.st===401){ expired(); return; }
+        if(!res.ok){ show($('#credMsg'), (res.d&&res.d.error)||'No se pudo guardar. Intenta de nuevo.','err'); return; }
+        $('#c-user').value=''; $('#c-pass').value=''; $('#c-pass2').value='';
+        show($('#credMsg'),'✓ Guardado. La próxima vez inicia sesión con tus nuevos datos.','ok');
+      })
+      .catch(function(){ btn.disabled=false; show($('#credMsg'),'No se pudo conectar. Revisa tu internet.','err'); });
+  };
 
   /* ================= MENU ================= */
   var ITEMS=[];
