@@ -92,6 +92,7 @@
 
     <div id="view-menu">
       <div class="hint">✏️ Edit names, descriptions and prices. Hit <strong>Save</strong> and it shows on the site instantly. Uncheck <strong>Visible</strong> to hide a dish without deleting it.</div>
+      <div style="position:sticky;top:0;z-index:5;background:var(--bg);padding:2px 0 12px"><input id="menuSearch" type="search" placeholder="🔎 Search the menu… name, description or category" autocomplete="off" spellcheck="false"></div>
       <div id="menu"><div class="loading">Loading the menu…</div></div>
       <p class="msg" id="appMsg"></p>
     </div>
@@ -270,6 +271,32 @@
 
   /* ---------- on load ---------- */
   if(TOKEN){ enterApp(); } else { $('#login').hidden=false; }
+})();
+</script>
+<script>
+/* menu search: filters the rendered list, changes nothing else */
+(function(){
+  var inp=document.getElementById('menuSearch'); var menu=document.getElementById('menu');
+  if(!inp||!menu) return;
+  var q='';
+  function norm(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+  function apply(){
+    var n=norm(q);
+    menu.querySelectorAll('.cat').forEach(function(sec){
+      var any=false;
+      var h=sec.querySelector('.cat__head h3');
+      var cat=norm(h?h.textContent:'');
+      sec.querySelectorAll('.item').forEach(function(it){
+        var nameEl=it.querySelector('.f-nombre'); var desEl=it.querySelector('.f-descr');
+        var hit=!n || norm(nameEl?nameEl.value:'').indexOf(n)>-1 || norm(desEl?desEl.value:'').indexOf(n)>-1 || cat.indexOf(n)>-1;
+        it.style.display=hit?'':'none';
+        if(hit) any=true;
+      });
+      sec.style.display=any?'':'none';
+    });
+  }
+  inp.addEventListener('input',function(){ q=inp.value.trim(); apply(); });
+  new MutationObserver(function(){ if(q) apply(); }).observe(menu,{childList:true,subtree:true});
 })();
 </script>
 </body>
